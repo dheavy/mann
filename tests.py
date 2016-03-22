@@ -1,7 +1,7 @@
 """Test suite for Mann."""
 # -*- coding: utf-8 -*-
 import unittest
-import colour_runner
+from colour_runner import runner as crunner
 # from mypleasure.mann import Mann
 
 
@@ -19,5 +19,5 @@ def suite():
     return suite
 
 if __name__ == '__main__':
-    runner = colour_runner.runner.ColourTextTestRunner()
+    runner = crunner.ColourTextTestRunner()
     runner.run(suite())
