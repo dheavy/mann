@@ -9,9 +9,8 @@ Instantiate it passing booleans in *args specifying
 the logger and notifiers to use.
 Use the `log` method to log/notify.
 
-Default were set to simplify configuration.
-i.e. File logging uses RotatingFileHandler with 'ab' write mode,
-max bytes size of 2000 and backup count of 100.
+Default were set to simplify configuration (_i.e. file logging uses RotatingFileHandler with 'ab' write mode,
+max bytes size of 2000 and backup count of 100_).
 
 - **console** - print in console if exists
 - **file**    - logs to file if exists
@@ -46,3 +45,8 @@ max bytes size of 2000 and backup count of 100.
     }
 }
 ```
+
+Like all software-based services on MyPleasure, **Mann** is named after
+an [Interstellar](https://en.wikipedia.org/wiki/Interstellar_(film))
+character, Dr Mann, who transmits logs with promising data to lure
+ _Endurance_'s crew member into visiting his planet.
