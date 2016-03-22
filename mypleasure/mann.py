@@ -80,10 +80,10 @@ class Mann(object):
     def log(self, msg=''):
         """Log file into desired outputs."""
         def unit(value, use):
-            return value and use or None
+            return (use is not False and value is not None) and value or None
 
         def bind(v, f):
-            return f(v) and v or None
+            return bool(v) is not False and f(v) or None
 
         bind(unit(msg, self.has_enabled_console), self.console)
         bind(unit(msg, self.has_enabled_file), self.file)
@@ -93,7 +93,7 @@ class Mann(object):
 
     def console(self, msg):
         """Print message in console."""
-        pass
+        print(msg)
 
     def file(self, msg):
         """Log message to file."""
