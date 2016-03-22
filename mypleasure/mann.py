@@ -44,9 +44,13 @@ class Mann(object):
         slack   - sends Slack message if exists
         trello  - create Trello task based on log, if exists
 
+        Add `raise_exception` and set it to True if you don't want
+        Mann to fail silently if an error occurs.
+
         **kwargs:
             {
                 'console': True,
+                'raise_exception': True
                 'file': {
                     'debug': <path-to-debug-log>,
                     'error': <path-to-error-log>
@@ -75,6 +79,7 @@ class Mann(object):
         self.has_enabled_email = bool(kwargs.get('email', None))
         self.has_enabled_slack = bool(kwargs.get('slack', None))
         self.has_enabled_trello = bool(kwargs.get('trello', None))
+        self.should_raise_exception = bool(kwargs.get('raise_exception', None))
         self.apis_config = kwargs
 
     def log(self, msg=''):
