@@ -13,11 +13,11 @@ Default were set to simplify configuration.
 i.e. File logging uses RotatingFileHandler with 'ab' write mode,
 max bytes size of 2000 and backup count of 100.
 
-**console** - print in console if exists
-**file**    - logs to file if exists
-**email**   - send log via email if exists
-**slack**   - sends Slack message if exists
-**trello**  - create Trello task based on log, if exists
+- **console** - print in console if exists
+- **file**    - logs to file if exists
+- **email**   - send log via email if exists
+- **slack**   - sends Slack message if exists
+- **trello**  - create Trello task based on log, if exists
 
 ```python
 **kwargs:
