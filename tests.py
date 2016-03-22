@@ -7,7 +7,7 @@ from colour_runner import runner as crunner
 from mypleasure.mann import Mann
 
 
-class ConsoleTestCase(unittest.TestCase):
+class ConsoleTestCasePrintsOutputToConsole(unittest.TestCase):
     """Test console logger."""
 
     def runTest(self): # noqa
@@ -38,10 +38,26 @@ class ConsoleTestCase(unittest.TestCase):
             sys.stdout = sys.__stdout__
 
 
+class FileTestCaseLogsToFile(unittest.TestCase):
+    """Test file logger outputs to file."""
+
+    def runTest(self): # noqa
+        pass
+
+
+class FileTestCaseRaiseExceptionOnWriteErrorIfAllowed(unittest.TestCase):
+    """Test file logger raises an exception on error, if allowed."""
+
+    def runTest(self): # noqa
+        pass
+
+
 def suite():
     """Compose and return test suite."""
     suite = unittest.TestSuite()
-    suite.addTest(ConsoleTestCase())
+    suite.addTest(ConsoleTestCasePrintsOutputToConsole())
+    suite.addTest(FileTestCaseLogsToFile())
+    suite.addTest(FileTestCaseRaiseExceptionOnWriteErrorIfAllowed())
     return suite
 
 if __name__ == '__main__':
