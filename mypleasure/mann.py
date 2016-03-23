@@ -105,16 +105,24 @@ class Mann(object):
 
     def console(self, msg, error=False):
         """Print message in console."""
-        print(msg)
+        output = ''
+        if error is True:
+            output += '[ERROR] '
+        output += msg
+
+        print(output)
 
     def file(self, msg, error=False):
         """Log message to file."""
         self.__set_file_logger()
 
-        if error is False:
-            self.info_log.info(msg)
-        else:
-            self.error_log.error(msg)
+        try:
+            if error is False:
+                self.info_log.info(msg)
+            else:
+                self.error_log.error(msg)
+        except Exception as e:
+            self.console(e, error=True)
 
     def email(self, msg, error=False):
         """Email message."""
@@ -147,7 +155,7 @@ class Mann(object):
             )
             self.mailer.quit()
         except Exception as e:
-            self.console(e)
+            self.file(e, error=True)
 
     def slack(self, msg, error=False):
         """Send as Slack message."""
