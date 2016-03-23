@@ -69,9 +69,7 @@ class Mann(object):
                 'trello': {
                     'key': <api-key>,
                     'token': <oauth-token>,
-                    'list': '<list-id>',
-                    'name': '<card-name>',
-                    'desc': '<card-description>'
+                    'list': '<list-id>'
                 }
             }
         """

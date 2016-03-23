@@ -43,9 +43,7 @@ max bytes size of 2000, a backup count of 100 and UTF-8 encoding_).
     'trello': {
         'key': <api-key>,
         'token': <oauth-token>,
-        'list': '<list-id>',
-        'name': '<card-name>',
-        'desc': '<card-description>'
+        'list': '<list-id>'
     }
 }
 ```
