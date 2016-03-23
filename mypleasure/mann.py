@@ -204,7 +204,7 @@ class Mann(object):
             )
 
     def __set_email_logger(self):
-        if not hasattr(self, '__mailer'):
+        if not hasattr(self, 'mailer'):
             try:
                 self.mailer = smtplib.SMTP(
                     self.config.get('email', {}).get('server', None),
@@ -214,7 +214,7 @@ class Mann(object):
                 self.file(e, error=True)
 
     def __set_slack_logger(self):
-        if not hasattr(self, '__slack'):
+        if not hasattr(self, 'slack'):
             try:
                 self.slacker = slacker.Slacker(
                     self.config.get('slack', {}).get('key', '')
