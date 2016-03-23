@@ -8,6 +8,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.header import Header
 from email.utils import formataddr
+from slacker import Slacker
 
 
 class Mann(object):
@@ -150,7 +151,14 @@ class Mann(object):
 
     def slack(self, msg, error=False):
         """Send as Slack message."""
-        pass
+        self.__set_slack_logger()
+
+        try:
+            self.slacker.chat.post_message(
+                self.config.get('slack', {}).get('channel', '#random')
+            )
+        except Exception as e:
+            self.file(e, error=True)
 
     def trello(self, msg, error=False):
         """Turn message to Trello card."""
@@ -169,7 +177,7 @@ class Mann(object):
                     '%(asctime)s - %(levelname)s - %(message)s'
                 )
                 if not hasattr(self, prop):
-                    f = self.config.get('file').get(key, None)
+                    f = self.config.get('file', {}).get(key, None)
                     if f:
                         handler = logging.handlers.RotatingFileHandler(
                             f, mode='ab', maxBytes=2000,
@@ -193,4 +201,13 @@ class Mann(object):
                     self.config.get('email', {}).get('port', None)
                 )
             except gaierror as e:
+                self.file(e, error=True)
+
+    def __set_slack_logger(self):
+        if not hasattr(self, '__slack'):
+            try:
+                self.slacker = Slacker(
+                    self.config.get('slack', {}).get('key', '')
+                )
+            except Exception as e:
                 self.file(e, error=True)
