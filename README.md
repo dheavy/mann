@@ -37,7 +37,8 @@ max bytes size of 2000, a backup count of 100 and UTF-8 encoding_).
     },
     'slack': {
         'key': <api-key>,
-        'channel': <api-channel>
+        'channel': <api-channel>,
+        'username': <bot-name>
     },
     'trello': {
         'key': <api-key>,

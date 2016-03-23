@@ -63,7 +63,8 @@ class Mann(object):
                 },
                 'slack': {
                     'key': <api-key>,
-                    'channel': <api-channel>
+                    'channel': <api-channel>,
+                    'username': <bot-name>
                 },
                 'trello': {
                     'key': <api-key>,
@@ -99,11 +100,11 @@ class Mann(object):
         def bind(v, f, err=False):
             return bool(v) is not False and f(v, err) or None
 
-        bind(unit(msg, self.has_enabled_console), self.console)
+        bind(unit(msg, self.has_enabled_console), self.console, err=error)
         bind(unit(msg, self.has_enabled_file), self.file, err=error)
-        bind(unit(msg, self.has_enabled_email), self.email)
-        bind(unit(msg, self.has_enabled_slack), self.slack)
-        bind(unit(msg, self.has_enabled_trello), self.trello)
+        bind(unit(msg, self.has_enabled_email), self.email, err=error)
+        bind(unit(msg, self.has_enabled_slack), self.slack, err=error)
+        bind(unit(msg, self.has_enabled_trello), self.trello, err=error)
 
     def console(self, msg, error=False):
         """Print message in console."""
@@ -164,10 +165,9 @@ class Mann(object):
         self.__set_slack_logger()
 
         try:
-            self.slacker.chat.post_message(
-                self.config.get('slack', {}).get('channel', '#random'),
-                msg
-            )
+            channel = self.config.get('slack', {}).get('channel', '#random')
+            botname = self.config.get('slack', {}).get('username', '')
+            self.slacker.chat.post_message(channel, msg, username=botname)
         except Exception as e:
             self.file(e, error=True)
 
