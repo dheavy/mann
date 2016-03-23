@@ -87,12 +87,29 @@ class EmailTestCase(unittest.TestCase):
             )
 
 
+class SlackTestCase(unittest.TestCase):
+    """Test logger sends Slack message."""
+
+    def runTest(self): # noqa
+        with patch('slacker.Slacker') as mock_slack:
+            expected = 'Fendouille'
+
+            logger = Mann(slack={'key': '', 'channel': '#general'})
+            logger.log(expected)
+
+            mocked = mock_slack.return_value
+            self.assertTrue(mocked.chat.post_message.called)
+            self.assertEqual(mocked.chat.call_count, 1)
+            mocked.chat.assert_called_once_with(expected)
+
+
 def suite():
     """Compose and return test suite."""
     suite = unittest.TestSuite()
     suite.addTest(ConsoleTestCase())
     suite.addTest(FileTestCase())
     suite.addTest(EmailTestCase())
+    suite.addTest(SlackTestCase())
     return suite
 
 if __name__ == '__main__':
