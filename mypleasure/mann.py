@@ -108,7 +108,7 @@ class Mann(object):
 
     def file(self, msg, error=False):
         """Log message to file."""
-        self.__set_file_handlers()
+        self.__set_file_logger()
 
         if error is False:
             self.info_log.info(msg)
@@ -127,8 +127,8 @@ class Mann(object):
         """Turn message to Trello card."""
         pass
 
-    def __set_file_handlers(self):
-
+    def __set_file_logger(self):
+        """Prepare file loggers."""
         if not hasattr(self, 'info_log') or not hasattr(self, 'error_log'):
             self.__fh_info = None
             self.__fh_error = None
