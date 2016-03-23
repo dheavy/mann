@@ -3,12 +3,12 @@
 import logging
 import logging.handlers
 import smtplib
+import slacker
 from socket import gaierror
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.header import Header
 from email.utils import formataddr
-from slacker import Slacker
 
 
 class Mann(object):
@@ -163,7 +163,8 @@ class Mann(object):
 
         try:
             self.slacker.chat.post_message(
-                self.config.get('slack', {}).get('channel', '#random')
+                self.config.get('slack', {}).get('channel', '#random'),
+                msg
             )
         except Exception as e:
             self.file(e, error=True)
@@ -214,7 +215,7 @@ class Mann(object):
     def __set_slack_logger(self):
         if not hasattr(self, '__slack'):
             try:
-                self.slacker = Slacker(
+                self.slacker = slacker.Slacker(
                     self.config.get('slack', {}).get('key', '')
                 )
             except Exception as e:

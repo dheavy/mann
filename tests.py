@@ -92,15 +92,18 @@ class SlackTestCase(unittest.TestCase):
 
     def runTest(self): # noqa
         with patch('slacker.Slacker') as mock_slack:
-            expected = 'Fendouille'
+            expected_msg = 'Fendouille, la dernière fille Mallé.'
+            expected_channel = '#plougastel'
 
-            logger = Mann(slack={'key': '', 'channel': '#general'})
-            logger.log(expected)
+            logger = Mann(slack={'key': '', 'channel': '#plougastel'})
+            logger.log(expected_msg)
 
             mocked = mock_slack.return_value
             self.assertTrue(mocked.chat.post_message.called)
-            self.assertEqual(mocked.chat.call_count, 1)
-            mocked.chat.assert_called_once_with(expected)
+            self.assertEqual(mocked.chat.post_message.call_count, 1)
+            mocked.chat.post_message.assert_called_once_with(
+                expected_channel, expected_msg
+            )
 
 
 def suite():
