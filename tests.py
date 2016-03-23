@@ -4,11 +4,12 @@ import os
 import sys
 import unittest
 from io import StringIO
+from mock import patch
 from colour_runner import runner as crunner
 from mypleasure.mann import Mann
 
 
-class ConsoleTestCasePrintsOutputToConsole(unittest.TestCase):
+class ConsoleTestCase(unittest.TestCase):
     """Test console logger."""
 
     def runTest(self): # noqa
@@ -39,45 +40,59 @@ class ConsoleTestCasePrintsOutputToConsole(unittest.TestCase):
             sys.stdout = sys.__stdout__
 
 
-class FileTestCaseLogsToFile(unittest.TestCase):
+class FileTestCase(unittest.TestCase):
     """Test file logger outputs to file."""
 
     def runTest(self): # noqa
-        info_excepted = 'Fendouille'
-        error_excepted = 'Loola'
+        info_expected = 'Fendouille'
+        error_expected = 'Loola'
 
         info_log = 'info.log'
         error_log = 'error.log'
 
         logger = Mann(file={'info': info_log, 'error': error_log})
-        logger.log(info_excepted)
-        logger.log(error_excepted, error=True)
+        logger.log(info_expected)
+        logger.log(error_expected, error=True)
 
         info_file = open(info_log, 'r')
         error_file = open(error_log, 'r')
         info_file.seek(0)
         error_file.seek(0)
 
-        self.assertIn(info_excepted, info_file.read())
-        self.assertIn(error_excepted, error_file.read())
+        self.assertIn(info_expected, info_file.read())
+        self.assertIn(error_expected, error_file.read())
 
         os.unlink(info_log)
         os.unlink(error_log)
 
 
-class FileTestCaseRaiseExceptionOnWriteErrorIfAllowed(unittest.TestCase):
-    """Test file logger raises an exception on error, if allowed."""
+class EmailTestCase(unittest.TestCase):
+    """Test email logger sends an email."""
 
     def runTest(self): # noqa
-        pass
+        with patch('smtplib.SMTP') as mock_smtp:
+            from_address = 'sender@mypleasu.re'
+            to_address = 'recipient@mypleasu.re'
+            expected = 'Fendouille'
+
+            logger = Mann(email={'from': from_address, 'to': to_address})
+            logger.log(expected)
+
+            mocked = mock_smtp.return_value
+
+            self.assertTrue(mocked.sendmail.called)
+            self.assertEqual(mocked.sendmail.call_count, 1)
+            mocked.sendmail.assert_called_once_with(
+                from_address, [to_address], expected.as_string()
+            )
 
 
 def suite():
     """Compose and return test suite."""
     suite = unittest.TestSuite()
-    suite.addTest(ConsoleTestCasePrintsOutputToConsole())
-    suite.addTest(FileTestCaseLogsToFile())
-    suite.addTest(FileTestCaseRaiseExceptionOnWriteErrorIfAllowed())
+    suite.addTest(ConsoleTestCase())
+    suite.addTest(FileTestCase())
+    suite.addTest(EmailTestCase())
     return suite
 
 if __name__ == '__main__':
