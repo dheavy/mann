@@ -29,6 +29,7 @@ max bytes size of 2000, a backup count of 100 and UTF-8 encoding_).
     'email': {
         'server': <smtp-server>,
         'port': <smtp-port>,
+        'sendername': <human-friendly-sender-name>,
         'from': <email-from-address>,
         'to': <email-to-address>,
         'user': <smtp-user>,

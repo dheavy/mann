@@ -2,13 +2,12 @@
 # -*- coding: utf-8 -*-
 import logging
 import logging.handlers
-# import smtplib
-# from socket import gaierror
-# from datetime import datetime
-# from email.mime.text import MIMEText
-# from email.mime.multipart import MIMEMultipart
-# from email.header import Header
-# from email.utils import formataddr
+import smtplib
+from socket import gaierror
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.header import Header
+from email.utils import formataddr
 
 
 class Mann(object):
@@ -54,6 +53,7 @@ class Mann(object):
                 'email': {
                     'server': <smtp-server>,
                     'port': <smtp-port>,
+                    'sendername': <human-friendly-sender-name>,
                     'from': <email-from-address>,
                     'to': <email-to-address>,
                     'user': <smtp-user>,
@@ -117,7 +117,36 @@ class Mann(object):
 
     def email(self, msg, error=False):
         """Email message."""
-        pass
+        self.__set_email_logger()
+
+        mail = MIMEMultipart()
+        mail['Subject'] = ''
+        if error is True:
+            mail['Subject'] += '[ERROR]'
+        mail['From'] = formataddr((str(
+            Header(self.config.get(
+                'email', {}).get('sendername', None), 'utf-8'
+            )),
+            self.config.get('email', {}).get('from')
+        ))
+        mail['To'] = self.config.get('email', {}).get('to', None)
+        mail.attach(MIMEText(msg, 'plain'))
+
+        try:
+            self.mailer.starttls()
+            if 'user' in self.config.get('email', {}):
+                self.mailer.login(
+                    self.config.get('email').get('user', ''),
+                    self.config.get('email', {}).get('password', '')
+                )
+            self.mailer.sendmail(
+                self.config.get('email', {}).get('from'),
+                [self.config.get('email', {}).get('to')],
+                msg
+            )
+            self.mailer.quit()
+        except Exception as e:
+            self.console(e)
 
     def slack(self, msg, error=False):
         """Send as Slack message."""
@@ -155,3 +184,13 @@ class Mann(object):
             prepare_handler(
                 self.error_log, '__fh_error', 'error', logging.ERROR
             )
+
+    def __set_email_logger(self):
+        if not hasattr(self, '__mailer'):
+            try:
+                self.mailer = smtplib.SMTP(
+                    self.config.get('email', {}).get('server', None),
+                    self.config.get('email', {}).get('port', None)
+                )
+            except gaierror as e:
+                self.file(e, error=True)

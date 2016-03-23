@@ -83,7 +83,7 @@ class EmailTestCase(unittest.TestCase):
             self.assertTrue(mocked.sendmail.called)
             self.assertEqual(mocked.sendmail.call_count, 1)
             mocked.sendmail.assert_called_once_with(
-                from_address, [to_address], expected.as_string()
+                from_address, [to_address], expected
             )
 
 
