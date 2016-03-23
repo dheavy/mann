@@ -92,7 +92,7 @@ class SlackTestCase(unittest.TestCase):
 
     def runTest(self): # noqa
         with patch('slacker.Slacker') as mock_slack:
-            expected_msg = 'Fendouille, l\'avant dernière fille Mallé.'
+            expected_msg = "Fendouille, l'avant dernière fille Mallé.'"
             expected_channel = '#plougastel'
 
             logger = Mann(slack={'key': '', 'channel': '#plougastel'})
@@ -110,7 +110,7 @@ class TrelloTestCase(unittest.TestCase):
     """Test logger create Trello tasks."""
 
     def runTest(self): # noqa
-        with patch('trello.Trello') as mock_trello:
+        with patch('trolly.client.Client') as mock_trello:
             expected_list = 'idlist'
             expected_msg = 'Loola, la dernière fille Mallé.'
 
@@ -124,9 +124,9 @@ class TrelloTestCase(unittest.TestCase):
             logger.log(expected_msg)
 
             mocked = mock_trello.return_value
-            self.assertTrue(mocked.new.called)
-            self.assertTrue(mocked.new.call_count, 1)
-            mocked.call_count.assert_called_once_with(
+            self.assertTrue(mocked.cards.new.called)
+            self.assertTrue(mocked.cards.new.call_count, 1)
+            mocked.cards.new.assert_called_once_with(
                 expected_msg, expected_list, expected_msg
             )
 

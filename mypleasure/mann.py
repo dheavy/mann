@@ -4,7 +4,7 @@ import logging
 import logging.handlers
 import smtplib
 import slacker
-import trello
+import trolly
 from socket import gaierror
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -103,7 +103,7 @@ class Mann(object):
         bind(unit(msg, self.has_enabled_file), self.file, err=error)
         bind(unit(msg, self.has_enabled_email), self.email)
         bind(unit(msg, self.has_enabled_slack), self.slack)
-        bind(unit(msg, self.has_enabled_trello), self.trello_task)
+        bind(unit(msg, self.has_enabled_trello), self.trello)
 
     def console(self, msg, error=False):
         """Print message in console."""
@@ -171,9 +171,16 @@ class Mann(object):
         except Exception as e:
             self.file(e, error=True)
 
-    def trello_task(self, msg, error=False):
+    def trello(self, msg, error=False):
         """Turn message to Trello card."""
         self.__set_trello_logger()
+
+        try:
+            self.trello_client.cards.new(
+                msg, self.config.get('trello', {}).get('list', ''), msg
+            )
+        except Exception as e:
+            self.file(e, error=True)
 
     def __set_file_logger(self):
         """Prepare file loggers."""
@@ -215,10 +222,20 @@ class Mann(object):
                 self.file(e, error=True)
 
     def __set_slack_logger(self):
-        if not hasattr(self, 'slack'):
+        if not hasattr(self, 'slack'):  # TODO: fix regression -> 'slacker'
             try:
                 self.slacker = slacker.Slacker(
                     self.config.get('slack', {}).get('key', '')
+                )
+            except Exception as e:
+                self.file(e, error=True)
+
+    def __set_trello_logger(self):
+        if not hasattr(self, 'trello_client'):
+            try:
+                self.trello_client = trolly.client.Client(
+                    self.config.get('trello', {}).get('key', ''),
+                    self.config.get('trello', {}).get('token', '')
                 )
             except Exception as e:
                 self.file(e, error=True)
