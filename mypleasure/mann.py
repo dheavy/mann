@@ -4,6 +4,7 @@ import logging
 import logging.handlers
 import smtplib
 import slacker
+import trello
 from socket import gaierror
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -102,7 +103,7 @@ class Mann(object):
         bind(unit(msg, self.has_enabled_file), self.file, err=error)
         bind(unit(msg, self.has_enabled_email), self.email)
         bind(unit(msg, self.has_enabled_slack), self.slack)
-        bind(unit(msg, self.has_enabled_trello), self.trello)
+        bind(unit(msg, self.has_enabled_trello), self.trello_task)
 
     def console(self, msg, error=False):
         """Print message in console."""
@@ -170,9 +171,9 @@ class Mann(object):
         except Exception as e:
             self.file(e, error=True)
 
-    def trello(self, msg, error=False):
+    def trello_task(self, msg, error=False):
         """Turn message to Trello card."""
-        pass
+        self.__set_trello_logger()
 
     def __set_file_logger(self):
         """Prepare file loggers."""
