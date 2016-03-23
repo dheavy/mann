@@ -10,10 +10,10 @@ the logger and notifiers to use.
 Use the `log` method to log/notify.
 
 Default were set to simplify configuration (_i.e. file logging uses RotatingFileHandler with 'ab' write mode,
-max bytes size of 2000 and backup count of 100_).
+max bytes size of 2000, a backup count of 100 and UTF-8 encoding_).
 
 - **console** - print in console if exists
-- **file**    - logs to file if exists
+- **file**    - logs to file if exists, using provided file handlers
 - **email**   - send log via email if exists
 - **slack**   - sends Slack message if exists
 - **trello**  - create Trello task based on log, if exists
@@ -23,8 +23,8 @@ max bytes size of 2000 and backup count of 100_).
 {
     'console': True,
     'file': {
-        'debug': <path-to-debug-log>,
-        'error': <path-to-error-log>
+        'info': <info-outfile-handle>,
+        'error': <error-outfile-handle>,
     },
     'email': {
         'server': <smtp-server>,
