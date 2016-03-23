@@ -92,7 +92,7 @@ class SlackTestCase(unittest.TestCase):
 
     def runTest(self): # noqa
         with patch('slacker.Slacker') as mock_slack:
-            expected_msg = 'Fendouille, la dernière fille Mallé.'
+            expected_msg = 'Fendouille, l\'avant dernière fille Mallé.'
             expected_channel = '#plougastel'
 
             logger = Mann(slack={'key': '', 'channel': '#plougastel'})
@@ -106,6 +106,31 @@ class SlackTestCase(unittest.TestCase):
             )
 
 
+class TrelloTestCase(unittest.TestCase):
+    """Test logger create Trello tasks."""
+
+    def runTest(self): # noqa
+        with patch('trello.Trello') as mock_trello:
+            expected_list = 'idlist'
+            expected_msg = 'Loola, la dernière fille Mallé.'
+
+            logger = Mann(trello={
+                'key': '',
+                'token': '',
+                'list': expected_list,
+                'name': expected_msg,
+                'desc': expected_msg
+            })
+            logger.log(expected_msg)
+
+            mocked = mock_trello.return_value
+            self.assertTrue(mocked.new.called)
+            self.assertTrue(mocked.new.call_count, 1)
+            mocked.call_count.assert_called_once_with(
+                expected_msg, expected_list, expected_msg
+            )
+
+
 def suite():
     """Compose and return test suite."""
     suite = unittest.TestSuite()
@@ -113,6 +138,7 @@ def suite():
     suite.addTest(FileTestCase())
     suite.addTest(EmailTestCase())
     suite.addTest(SlackTestCase())
+    suite.addTest(TrelloTestCase())
     return suite
 
 if __name__ == '__main__':
