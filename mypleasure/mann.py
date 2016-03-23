@@ -44,13 +44,9 @@ class Mann(object):
         slack   - sends Slack message if exists
         trello  - create Trello task based on log, if exists
 
-        Add `raise_exception` and set it to True if you don't want
-        Mann to fail silently if an error occurs.
-
         **kwargs:
             {
                 'console': True,
-                'raise_exception': True
                 'file': {
                     'info': <info-outfile-handle>,
                     'error': <error-outfile-handle>
@@ -58,7 +54,8 @@ class Mann(object):
                 'email': {
                     'server': <smtp-server>,
                     'port': <smtp-port>,
-                    'recipient': <email-recipient-address>,
+                    'from': <email-from-address>,
+                    'to': <email-to-address>,
                     'user': <smtp-user>,
                     'password': <smtp-password>
                 },
