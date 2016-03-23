@@ -1,5 +1,6 @@
 """Test suite for Mann."""
 # -*- coding: utf-8 -*-
+import os
 import sys
 import unittest
 from io import StringIO
@@ -42,7 +43,26 @@ class FileTestCaseLogsToFile(unittest.TestCase):
     """Test file logger outputs to file."""
 
     def runTest(self): # noqa
-        pass
+        info_excepted = 'Fendouille'
+        error_excepted = 'Loola'
+
+        info_log = 'info.log'
+        error_log = 'error.log'
+
+        logger = Mann(file={'info': info_log, 'error': error_log})
+        logger.log(info_excepted)
+        logger.log(error_excepted, error=True)
+
+        info_file = open(info_log, 'r')
+        error_file = open(error_log, 'r')
+        info_file.seek(0)
+        error_file.seek(0)
+
+        self.assertIn(info_excepted, info_file.read())
+        self.assertIn(error_excepted, error_file.read())
+
+        os.unlink(info_log)
+        os.unlink(error_log)
 
 
 class FileTestCaseRaiseExceptionOnWriteErrorIfAllowed(unittest.TestCase):
