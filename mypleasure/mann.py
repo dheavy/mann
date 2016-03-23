@@ -222,7 +222,7 @@ class Mann(object):
                 self.file(e, error=True)
 
     def __set_slack_logger(self):
-        if not hasattr(self, 'slack'):  # TODO: fix regression -> 'slacker'
+        if not hasattr(self, 'slacker'):
             try:
                 self.slacker = slacker.Slacker(
                     self.config.get('slack', {}).get('key', '')
