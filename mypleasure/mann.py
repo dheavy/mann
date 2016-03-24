@@ -72,7 +72,8 @@ class Mann(object):
                     'key': <api-key>,
                     'token': <oauth-token>,
                     'list': '<list-id>',
-                    'members': <string-name-or-tuple-of-member-ids-to-add>
+                    'cardname': <optional-card-name>
+                    'members': <string-id-or-tuple-of-member-ids-to-add>
                 }
             }
         """
@@ -186,7 +187,7 @@ class Mann(object):
                 'key': trello_conf.get('key', ''),
                 'token': trello_conf.get('token', ''),
                 'idList': trello_conf.get('list', ''),
-                'name': msg,
+                'name': trello_conf.get('cardname', msg),
                 'desc': msg,
                 'pos': 'top',
                 'members': trello_conf.get('members', None)
