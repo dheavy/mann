@@ -32,6 +32,7 @@ max bytes size of 2000, a backup count of 100 and UTF-8 encoding_).
         'sendername': <human-friendly-sender-name>,
         'from': <email-from-address>,
         'to': <email-to-address>,
+        'subject': <subject-line>,
         'user': <smtp-user>,
         'password': <smtp-password>
     },

@@ -58,6 +58,7 @@ class Mann(object):
                     'sendername': <human-friendly-sender-name>,
                     'from': <email-from-address>,
                     'to': <email-to-address>,
+                    'subject': <subject-line>,
                     'user': <smtp-user>,
                     'password': <smtp-password>
                 },
@@ -132,30 +133,29 @@ class Mann(object):
         mail = MIMEMultipart()
         mail['Subject'] = ''
         if error is True:
-            mail['Subject'] += '[ERROR]'
+            mail['Subject'] += '[ERROR] '
+            mail['Subject'] += self.config.get('email', {}).get('subject', '')
         mail['From'] = formataddr((str(
             Header(self.config.get(
-                'email', {}).get('sendername', None), 'utf-8'
+                'email', {}).get('sendername', ''), 'utf-8'
             )),
             self.config.get('email', {}).get('from')
         ))
-        mail['To'] = self.config.get('email', {}).get('to', None)
+        mail['To'] = self.config.get('email', {}).get('to', '')
         mail.attach(MIMEText(msg, 'plain'))
-
         try:
             self.mailer.starttls()
-            if 'user' in self.config.get('email', {}):
-                self.mailer.login(
-                    self.config.get('email').get('user', ''),
-                    self.config.get('email', {}).get('password', '')
-                )
+            self.mailer.login(
+                self.config.get('email').get('user', ''),
+                self.config.get('email', {}).get('password', '')
+            )
             self.mailer.sendmail(
                 self.config.get('email', {}).get('from'),
                 [self.config.get('email', {}).get('to')],
                 msg
             )
             self.mailer.quit()
-        except Exception as e:
+        except smtplib.SMTPDataError as e:
             self.file(e, error=True)
 
     def slack(self, msg, error=False):
@@ -214,7 +214,7 @@ class Mann(object):
             try:
                 self.mailer = smtplib.SMTP(
                     self.config.get('email', {}).get('server', None),
-                    self.config.get('email', {}).get('port', None)
+                    self.config.get('email', {}).get('port', 587)
                 )
             except gaierror as e:
                 self.file(e, error=True)
