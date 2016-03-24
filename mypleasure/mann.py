@@ -4,7 +4,8 @@ import logging
 import logging.handlers
 import smtplib
 import slacker
-import trolly
+import requests
+import urllib.parse
 from socket import gaierror
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -54,7 +55,7 @@ class Mann(object):
                 },
                 'email': {
                     'server': <smtp-server>,
-                    'port': <smtp-port>,
+                    'port': <smtp-port-defaults-to-587>,
                     'sendername': <human-friendly-sender-name>,
                     'from': <email-from-address>,
                     'to': <email-to-address>,
@@ -70,7 +71,8 @@ class Mann(object):
                 'trello': {
                     'key': <api-key>,
                     'token': <oauth-token>,
-                    'list': '<list-id>'
+                    'list': '<list-id>',
+                    'members': <string-name-or-tuple-of-member-ids-to-add>
                 }
             }
         """
@@ -116,7 +118,11 @@ class Mann(object):
 
     def file(self, msg, error=False):
         """Log message to file."""
-        self.__set_file_logger()
+        try:
+            self.__set_file_logger()
+        except Exception:
+            self.console(msg)
+            return
 
         try:
             if error is False:
@@ -171,12 +177,50 @@ class Mann(object):
 
     def trello(self, msg, error=False):
         """Turn message to Trello card."""
-        self.__set_trello_logger()
+        if error is True:
+            msg = '[ERROR] ' + msg
 
         try:
-            self.trello_client.cards.new(
-                msg, self.config.get('trello', {}).get('list', ''), msg
-            )
+            trello_conf = self.config.get('trello', {})
+            payload = {
+                'key': trello_conf.get('key', ''),
+                'token': trello_conf.get('token', ''),
+                'idList': trello_conf.get('list', ''),
+                'name': msg,
+                'desc': msg,
+                'pos': 'top',
+                'members': trello_conf.get('members', None)
+            }
+            encoded = urllib.parse.urlencode(payload)
+            uri = 'https://api.trello.com/1/cards?{0}'.format(encoded)
+
+            req = requests.post(uri)
+            json_card = req.json()
+
+            # If members where given, dispatch them on card.
+            # TODO: Refactor plumbing down there with Monads...
+            if payload['members'] is not None:
+                members = None
+                if isinstance(payload['members'], str):
+                    members = (payload['members'],)
+                elif isinstance(payload['members'], tuple):
+                    members = payload['members']
+
+                if members is not None:
+                    key = payload['key']
+                    token = payload['token']
+                    cid = json_card['id']
+
+                    for m in members:
+                        encoded = {'key': key, 'token': token, 'value': m}
+                        encoded = urllib.parse.urlencode(encoded)
+
+                        base = 'https://api.trello.com/1/cards/'
+                        base += cid + '/idMembers?'
+
+                        uri = '{0}{1}'.format(base, encoded)
+                        req = requests.post(uri)
+
         except Exception as e:
             self.file(e, error=True)
 
@@ -194,7 +238,12 @@ class Mann(object):
                 )
                 if not hasattr(self, prop):
                     f = self.config.get('file', {}).get(key, None)
-                    if f:
+
+                    # Create file loggers if filename were given,
+                    # otherwise bail out with exception.
+                    # It will be caught up to ensure error is
+                    # instead printed in console.
+                    if f is not None:
                         handler = logging.handlers.RotatingFileHandler(
                             f, mode='ab', maxBytes=2000,
                             backupCount=100, encoding='utf-8'
@@ -203,6 +252,8 @@ class Mann(object):
                         getattr(self, prop).setFormatter(fmt)
                         logger.setLevel(level)
                         logger.addHandler(handler)
+                    else:
+                        raise Exception()
 
             prepare_handler(self.info_log, '__fh_info', 'info', logging.INFO)
             prepare_handler(
@@ -224,16 +275,6 @@ class Mann(object):
             try:
                 self.slacker = slacker.Slacker(
                     self.config.get('slack', {}).get('key', '')
-                )
-            except Exception as e:
-                self.file(e, error=True)
-
-    def __set_trello_logger(self):
-        if not hasattr(self, 'trello_client'):
-            try:
-                self.trello_client = trolly.client.Client(
-                    self.config.get('trello', {}).get('key', ''),
-                    self.config.get('trello', {}).get('token', '')
                 )
             except Exception as e:
                 self.file(e, error=True)

@@ -28,7 +28,7 @@ max bytes size of 2000, a backup count of 100 and UTF-8 encoding_).
     },
     'email': {
         'server': <smtp-server>,
-        'port': <smtp-port>,
+        'port': <smtp-port-defaults-to-587>,
         'sendername': <human-friendly-sender-name>,
         'from': <email-from-address>,
         'to': <email-to-address>,
@@ -44,10 +44,17 @@ max bytes size of 2000, a backup count of 100 and UTF-8 encoding_).
     'trello': {
         'key': <api-key>,
         'token': <oauth-token>,
-        'list': '<list-id>'
+        'list': '<list-id>',
+        'members': <string-name-or-tuple-of-member-ids-to-add>
     }
 }
 ```
+
+## Detailed documentation
+
+TBA
+
+## Trivia
 
 Like all software-based services on MyPleasure, **Mann** is named after
 an [Interstellar](https://en.wikipedia.org/wiki/Interstellar_(film))
