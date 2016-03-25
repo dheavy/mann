@@ -208,3 +208,7 @@ character, Dr Mann, who transmits logs with promising data to lure
  _Endurance_'s crew member into visiting his planet. :space_invader:
 
 Also, **Fendi** and **Loola** are our favorite dogs :dog:. And [**Plougastel-Daoulas**](https://en.wikipedia.org/wiki/Plougastel-Daoulas) our favorite place in **Brittany**:heart:.
+
+## License
+
+#### MIT
