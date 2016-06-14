@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2016 Davy Peter Braun
+Copyright (c) 2016-present Davy Peter Braun
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
