@@ -3,7 +3,7 @@ from distutils.core import setup
 
 setup(
     name='mann',
-    packages=['mann'],
+    packages=['mypleasure'],
     version='0.9.1',
     description='A multi-purpose logger and notifier.',
     author='Davy Peter Braun',
