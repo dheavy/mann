@@ -200,15 +200,6 @@ logger.log(
 )
 ```
 
-## Trivia
-
-Like all software-based services on MyPleasure, **Mann** is named after
-an [Interstellar](https://en.wikipedia.org/wiki/Interstellar_(film))
-character, Dr Mann, who transmits logs with promising data to lure
- _Endurance_'s crew member into visiting his planet. :space_invader:
-
-Also, **Fendi** and **Loola** are our favorite dogs :dog:. And [**Plougastel-Daoulas**](https://en.wikipedia.org/wiki/Plougastel-Daoulas) our favorite place in **Brittany**:heart:.
-
 ## License
 
 #### MIT
